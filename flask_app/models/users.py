@@ -2,6 +2,11 @@ from flask_app.config.mysqlconnection import connectToMySQL
 from .classrooms import Classroom
 from .hobbies import Hobbie
 from flask import flash
+import re  # importa uso de expresiones regulares.
+
+
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+
 
 class User:
     def __init__(self, data):
@@ -30,14 +35,14 @@ class User:
             usr = cls(u)
             users.append(usr)
         return users
-    
+
     @classmethod
     def guardar(cls, formulario):
         #data = {"first_name": "C", "last_name": "X", "email": "c@cd.com"}
         query = "INSERT INTO users (first_name, last_name, email, classroom_id) VALUES (%(first_name)s, %(last_name)s, %(email)s, %(classroom_id)s)"
         result = connectToMySQL('esquema_usuarios').query_db(query, formulario)
         return result
-    
+
     @classmethod
     def mostrar(cls, formulario):
         #formulario = {"id": "1"}
@@ -59,6 +64,19 @@ class User:
 
             hobbie = Hobbie(hobbie_data)
             user.hobbies.append(hobbie)
-            
 
         return user
+
+    @staticmethod
+    def validaUser(user):
+        valid = True
+        if(len(user["first_name"]) < 3):
+            flash("Nombre invalido debe ser mayor a 3 caracteres")
+            valid = False
+        if(len(user["last_name"]) < 3):
+            flash("Apellido invalido debe ser mayor a 3 caracteres")
+            valid = False
+        if(not EMAIL_REGEX.match(user["email"])):
+            flash("El correo electrónico es invalido")
+            valid = False
+        return valid
