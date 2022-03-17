@@ -17,6 +17,7 @@ class User:
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
         self.classroom_id = data['classroom_id']
+        self.password = data["password"]
 
         classroom = Classroom.muestra_salon_2(data['classroom_id'])
         self.classroom = classroom
@@ -39,7 +40,7 @@ class User:
     @classmethod
     def guardar(cls, formulario):
         #data = {"first_name": "C", "last_name": "X", "email": "c@cd.com"}
-        query = "INSERT INTO users (first_name, last_name, email, classroom_id) VALUES (%(first_name)s, %(last_name)s, %(email)s, %(classroom_id)s)"
+        query = "INSERT INTO users (first_name, last_name, email, classroom_id, password) VALUES (%(first_name)s, %(last_name)s, %(email)s, %(classroom_id)s, %(password)s)"
         result = connectToMySQL('esquema_usuarios').query_db(query, formulario)
         return result
 

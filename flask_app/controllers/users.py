@@ -23,9 +23,20 @@ def new():
 @app.route('/create', methods=['POST'])
 def create():
     print(request.form)
-    if(not User.validaUser(request.form)):
+
+    pwd= bcrypt.generate_password_hash(request.form["password"])
+
+    formulario ={
+        "first_name": request.form["first_name"],
+        "last_name": request.form["last_name"],
+        "email": request.form["email"],
+        "classroom_id": request.form["classroom_id"],
+        "password": pwd,
+    }
+
+    if(not User.validaUser(formulario)):
         return redirect('/new')
-    User.guardar(request.form)
+    User.guardar(formulario)
     return redirect('/')
 
 
